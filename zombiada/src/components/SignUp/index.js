@@ -45,7 +45,8 @@ class SignUpFormBase extends Component {
     // todo: in catch, event.currentTarget is null, should be something
     onSubmit = event => {
         event.preventDefault();
-        console.log(event.currentTarget)
+        const past_event = event.currentTarget;
+        console.log(typeof event.currentTarget)
         const { firstName, lastName, username, email, password } = this.state;
         this.props.firebase.doCreateUserWithEmailAndPassword(email,password).then(
             authUser => {
@@ -53,8 +54,8 @@ class SignUpFormBase extends Component {
                 this.props.history.push(ROUTES.HOME);
             }
         ).catch(error => {
-            console.log(event.currentTarget)
-            this.setState({["anchorEl"]: event.currentTarget});
+            console.log(past_event[1])
+            this.setState({["anchorEl"]: past_event[10]});
         });
     };
 
@@ -142,7 +143,7 @@ class SignUpFormBase extends Component {
                                         align="center"
                                         padding={theme.spacing(0.7)}
                                     >First and last name must be at least 3 letters long,
-                                        this is a role playing game, try to use a realistic name.</Typography>
+                                        this is a role playing game, try to use a realistic name</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -161,7 +162,7 @@ class SignUpFormBase extends Component {
                                         align="center"
                                         padding={theme.spacing(0.7)}
                                     >Username must be at least 8 characters long
-                                        and can contain only numbers and letters.</Typography>
+                                        and can contain only numbers and letters</Typography>
                                 </Grid>
 
                                 <Grid item xs={12}>
@@ -180,7 +181,7 @@ class SignUpFormBase extends Component {
                                         variant="caption"
                                         align="center"
                                         padding={theme.spacing(0.7)}
-                                    >Email will be verified.</Typography>
+                                    >Email will be verified</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -202,9 +203,10 @@ class SignUpFormBase extends Component {
                                     padding={theme.spacing(0.7)}
                                 >Password must be at least 8 characters long
                                     and contain at least 1 lowercase letter,
-                                    1 uppercase letter, 1 number and 1 symbol.</Typography>
+                                    1 uppercase letter, 1 number and 1 symbol</Typography>
                             </Grid>
                             <Button
+                                id="btm-submit"
                                 type="submit"
                                 fullWidth
                                 variant="contained"
@@ -222,8 +224,12 @@ class SignUpFormBase extends Component {
                                     vertical: 'bottom',
                                     horizontal: 'center',
                                 }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}
                             >
-                                <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+                                <Typography sx={{ p: 2 }}>Email already exists</Typography>
                             </Popover>
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
