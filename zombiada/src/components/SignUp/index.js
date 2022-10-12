@@ -54,7 +54,6 @@ class SignUpFormBase extends Component {
                 this.props.history.push(ROUTES.HOME);
             }
         ).catch(error => {
-            console.log(past_event[1])
             this.setState({["anchorEl"]: past_event[10]});
         });
     };
@@ -267,11 +266,5 @@ class SignUpFormBase extends Component {
 
 const SignUpForm = withRouter(withFirebase(SignUpFormBase));
 
-const SignUpLink = () => (
-    <p>
-        Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-    </p>
-);
-
 export default SignUpPage;
-export {SignUpForm, SignUpLink};
+export {SignUpForm};
