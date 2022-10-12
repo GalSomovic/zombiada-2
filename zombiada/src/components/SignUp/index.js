@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
+import validator from 'validator';
+import { withFirebase } from '../Firebase';
 import {
     Avatar,
     Box,
     Button,
     Checkbox, Container, createTheme, CssBaseline,
     FormControlLabel,
-    Grid,
+    Grid, Popover,
     TextField,
     ThemeProvider,
     Typography
@@ -28,30 +30,38 @@ const INITIAL_STATE = {
     email: '',
     password: '',
     error: null,
+    anchorEl: null,
 };
 
 const theme = createTheme();
 
-class SignUpForm extends Component {
+
+class SignUpFormBase extends Component {
     constructor(props) {
         super(props);
         this.state = {...INITIAL_STATE}
     }
 
+    // todo: in catch, event.currentTarget is null, should be something
     onSubmit = event => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            name: data.get('firstName'),
-            last_name: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
+        console.log(event.currentTarget)
+        const { firstName, lastName, username, email, password } = this.state;
+        this.props.firebase.doCreateUserWithEmailAndPassword(email,password).then(
+            authUser => {
+                this.state=({...INITIAL_STATE});
+                this.props.history.push(ROUTES.HOME);
+            }
+        ).catch(error => {
+            console.log(event.currentTarget)
+            this.setState({["anchorEl"]: event.currentTarget});
         });
     };
 
     onChange = event => {
         this.setState({[event.target.name]: event.target.value})
     };
+
 
     render() {
         const {
@@ -61,18 +71,27 @@ class SignUpForm extends Component {
             email,
             password,
             error,
+            anchorEl,
         } = this.state;
 
-        // todo: make this more secure
+        const handleClose = () => {
+            this.setState({anchorEl: null});
+        };
+
+        const open = Boolean(anchorEl);
+
+        const id = open ? 'simple-popover' : undefined;
+
         let isInvalid =
-            firstName === '' ||
-            lastName === '' ||
-            password === '' ||
-            password.length <= 6 ||
-            email === '' ||
-            !(email.includes('@')) ||
-            !(email.includes('.')) ||
-            username === '';
+            firstName.length < 3 ||
+            lastName.length < 3 ||
+            !validator.isStrongPassword(password, {
+                minLength: 8, minLowercase: 1,
+                minUppercase: 1, minNumbers: 1, minSymbols: 1
+            }) ||
+            !validator.isEmail(email) ||
+            username.length < 8 ||
+            !validator.isAlphanumeric(username);
         return (
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xs">
@@ -87,7 +106,7 @@ class SignUpForm extends Component {
                     >
                         <Avatar src="" sx={{m: 1}}>
                         </Avatar>
-                        <Typography component="h1" variant="h5">
+                        <Typography component="h1" variant="h5" align="center">
                             Sign up
                         </Typography>
                         <Box component="form" noValidate onSubmit={this.onSubmit} sx={{mt: 3}}>
@@ -116,6 +135,16 @@ class SignUpForm extends Component {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
+                                    <Typography
+                                        display="block"
+                                        color="textSecondary"
+                                        variant="caption"
+                                        align="center"
+                                        padding={theme.spacing(0.7)}
+                                    >First and last name must be at least 3 letters long,
+                                        this is a role playing game, try to use a realistic name.</Typography>
+                                </Grid>
+                                <Grid item xs={12}>
                                     <TextField
                                         required
                                         fullWidth
@@ -125,7 +154,16 @@ class SignUpForm extends Component {
                                         autoComplete="username"
                                         onChange={this.onChange}
                                     />
+                                    <Typography
+                                        display="block"
+                                        color="textSecondary"
+                                        variant="caption"
+                                        align="center"
+                                        padding={theme.spacing(0.7)}
+                                    >Username must be at least 8 characters long
+                                        and can contain only numbers and letters.</Typography>
                                 </Grid>
+
                                 <Grid item xs={12}>
                                     <TextField
                                         required
@@ -136,6 +174,13 @@ class SignUpForm extends Component {
                                         autoComplete="email"
                                         onChange={this.onChange}
                                     />
+                                    <Typography
+                                        display="block"
+                                        color="textSecondary"
+                                        variant="caption"
+                                        align="center"
+                                        padding={theme.spacing(0.7)}
+                                    >Email will be verified.</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -149,6 +194,15 @@ class SignUpForm extends Component {
                                         onChange={this.onChange}
                                     />
                                 </Grid>
+                                <Typography
+                                    display="block"
+                                    color="textSecondary"
+                                    variant="caption"
+                                    align="center"
+                                    padding={theme.spacing(0.7)}
+                                >Password must be at least 8 characters long
+                                    and contain at least 1 lowercase letter,
+                                    1 uppercase letter, 1 number and 1 symbol.</Typography>
                             </Grid>
                             <Button
                                 type="submit"
@@ -159,6 +213,18 @@ class SignUpForm extends Component {
                             >
                                 Sign Up
                             </Button>
+                            <Popover
+                                id={id}
+                                open={open}
+                                anchorEl={anchorEl}
+                                onClose={handleClose}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }}
+                            >
+                                <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+                            </Popover>
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
                                     <Link to={ROUTES.SIGN_IN} variant="body2">
@@ -166,6 +232,25 @@ class SignUpForm extends Component {
                                     </Link>
                                 </Grid>
                             </Grid>
+                            {/*<Grid item xs={12}>*/}
+                            {/*    <Typography*/}
+                            {/*        display="block"*/}
+                            {/*        color="textSecondary"*/}
+                            {/*        variant="caption"*/}
+                            {/*        align="center"*/}
+                            {/*        padding={theme.spacing(5)}*/}
+                            {/*    >*/}
+                            {/*        Username must be at least 8 characters long*/}
+                            {/*        and can contain only numbers and letters.*/}
+                            {/*        <br />*/}
+                            {/*        Password must be at least 8 characters long*/}
+                            {/*        and contain at least 1 lowercase letter,*/}
+                            {/*        1 uppercase letter, 1 number and 1 symbol.*/}
+                            {/*        <br />*/}
+                            {/*        First and last name must be at least 3 letters long,*/}
+                            {/*        this is a role playing game, try to use a realistic name.*/}
+                            {/*    </Typography>*/}
+                            {/*</Grid>*/}
                         </Box>
                     </Box>
                 </Container>
@@ -174,9 +259,7 @@ class SignUpForm extends Component {
     }
 }
 
-function LockOutlinedIcon() {
-    return null;
-}
+const SignUpForm = withRouter(withFirebase(SignUpFormBase));
 
 const SignUpLink = () => (
     <p>

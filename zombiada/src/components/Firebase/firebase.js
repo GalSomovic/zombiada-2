@@ -1,5 +1,5 @@
-import app from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import {initializeApp} from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const config = {
     apiKey: `${process.env.REACT_APP_API_KEY}`,
@@ -13,15 +13,15 @@ const config = {
 
 class Firebase {
     constructor() {
-        app.initializeApp(config);
-        this.auth = app.auth();
+        this.app = initializeApp(config);
+        this.auth = getAuth();
     }
 
     // *** Auth API ***
 
     // todo: error handling when a creating a user that already exists
     doCreateUserWithEmailAndPassword = (email, password) =>
-        this.auth.createUserWithEmailAndPassword(email, password);
+        createUserWithEmailAndPassword(this.auth,email,password)
 
     // todo: error handling when a user doesn't exists
     doSignInWithEmailAndPassword = (email, password) =>
