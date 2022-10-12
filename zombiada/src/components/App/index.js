@@ -22,17 +22,17 @@ class App extends  Component {
         };
     }
 
-    componentDidMount() {
-        this.props.firebase.auth.onAuthStateChanged(authUser => {
-            authUser
-                ? this.setState({ authUser })
-                : this.setState({ authUser: null });
-        });
-    }
-
-    componentWillUnmount() {
-        this.listener();
-    }
+    // componentDidMount() {
+    //     this.props.firebase.auth.onAuthStateChanged(authUser => {
+    //         authUser
+    //             ? this.setState({ authUser })
+    //             : this.setState({ authUser: null });
+    //     });
+    // }
+    //
+    // componentWillUnmount() {
+    //     this.listener();
+    // }
 
 
     render() {
