@@ -42,7 +42,7 @@ const NavigationAuth = () => {
 
 const NavigationNonAuth = () => {
     const pages = {
-        'Landing': ROUTES.LANDING,
+        'Home': ROUTES.LANDING,
         'Sing In': ROUTES.SIGN_IN,
     };
     return (
@@ -59,7 +59,6 @@ const NavigationNonAuth = () => {
                         </Button>
                     )
                     }
-                    <SignOutButton/>
                 </Box>
             </StyledToolBar>
         </AppBar>
