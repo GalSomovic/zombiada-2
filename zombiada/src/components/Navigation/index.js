@@ -4,14 +4,21 @@ import * as ROUTES from '../../constants/routes';
 import {AppBar, Box, Button, IconButton, Menu, MenuItem, styled, Toolbar, Typography} from "@mui/material";
 import * as PropTypes from "prop-types";
 import SignOutButton from '../SignOut';
+import {AuthUserContext} from '../Session';
 
 const StyledToolBar = styled(Toolbar)({
     display: "flex",
     justifyContent: "space-between"
 })
 
-const Navigation = ({ authUser }) => (
-    <>{authUser ? <NavigationAuth /> : <NavigationNonAuth />}</>
+const Navigation = () => (
+    <>
+        <AuthUserContext.Consumer>
+            {authUser =>
+                authUser ? <NavigationAuth /> : <NavigationNonAuth />
+            }
+        </AuthUserContext.Consumer>
+    </>
 )
 
 const NavigationAuth = () => {

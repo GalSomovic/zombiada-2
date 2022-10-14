@@ -10,3 +10,5 @@ const SignOutButton = ({ firebase }) => (
 
 
 export default withFirebase(SignOutButton);
+
+// todo:singout leaves you in the homepage

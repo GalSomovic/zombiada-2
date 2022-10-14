@@ -3,6 +3,8 @@ import { getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
+    sendPasswordResetEmail,
+    updatePassword,
 } from "firebase/auth";
 
 const config = {
@@ -34,10 +36,10 @@ class Firebase {
     doSignOut = () => signOut(this.auth);
 
     // todo: error handling - email doesn't exists
-    doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+    doPasswordReset = email => sendPasswordResetEmail(this.auth, email);
 
     doPasswordUpdate = password =>
-        this.auth.currentUser.updatePassword(password);
+        updatePassword(this.auth.currentUser, password);
 }
 
 export default Firebase;
