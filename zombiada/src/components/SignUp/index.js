@@ -4,12 +4,13 @@ import * as ROUTES from '../../constants/routes';
 import validator from 'validator';
 import { withFirebase } from '../Firebase';
 import {
+    Alert,
     Avatar,
     Box,
     Button,
     Checkbox, Container, createTheme, CssBaseline,
     FormControlLabel,
-    Grid, Popover,
+    Grid, Popover, Snackbar,
     TextField,
     ThemeProvider,
     Typography
@@ -140,7 +141,7 @@ class SignUpFormBase extends Component {
                                         color="textSecondary"
                                         variant="caption"
                                         align="center"
-                                        padding={theme.spacing(0.7)}
+                                        // sx={{mt: 0.5}}
                                     >First and last name must be at least 3 letters long,
                                         this is a role playing game, try to use a realistic name</Typography>
                                 </Grid>
@@ -159,7 +160,7 @@ class SignUpFormBase extends Component {
                                         color="textSecondary"
                                         variant="caption"
                                         align="center"
-                                        padding={theme.spacing(0.7)}
+                                        sx={{mt: 2}}
                                     >Username must be at least 8 characters long
                                         and can contain only numbers and letters</Typography>
                                 </Grid>
@@ -179,7 +180,7 @@ class SignUpFormBase extends Component {
                                         color="textSecondary"
                                         variant="caption"
                                         align="center"
-                                        padding={theme.spacing(0.7)}
+                                        sx={{mt: 2}}
                                     >Email will be verified</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -199,7 +200,7 @@ class SignUpFormBase extends Component {
                                     color="textSecondary"
                                     variant="caption"
                                     align="center"
-                                    padding={theme.spacing(0.7)}
+                                    sx={{mt: 2}}
                                 >Password must be at least 8 characters long
                                     and contain at least 1 lowercase letter,
                                     1 uppercase letter, 1 number and 1 symbol</Typography>
@@ -214,22 +215,31 @@ class SignUpFormBase extends Component {
                             >
                                 Sign Up
                             </Button>
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'center',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'center',
-                                }}
-                            >
-                                <Typography sx={{ p: 2 }}>Email already exists</Typography>
-                            </Popover>
+                            <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}
+                                      anchorOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'center',
+                                      }}>
+                                <Alert onClose={handleClose} severity="error" variant="filled" sx={{width: '100%'}}>
+                                    Email already exists
+                                </Alert>
+                            </Snackbar>
+                            {/*<Popover*/}
+                            {/*    id={id}*/}
+                            {/*    open={open}*/}
+                            {/*    anchorEl={anchorEl}*/}
+                            {/*    onClose={handleClose}*/}
+                            {/*    anchorOrigin={{*/}
+                            {/*        vertical: 'bottom',*/}
+                            {/*        horizontal: 'center',*/}
+                            {/*    }}*/}
+                            {/*    transformOrigin={{*/}
+                            {/*        vertical: 'top',*/}
+                            {/*        horizontal: 'center',*/}
+                            {/*    }}*/}
+                            {/*>*/}
+                            {/*    <Typography sx={{ p: 2 }}>Email already exists</Typography>*/}
+                            {/*</Popover>*/}
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
                                     <Link to={ROUTES.SIGN_IN} variant="body2">

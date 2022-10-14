@@ -14,14 +14,14 @@ import Box from '@mui/material/Box';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {Alert, Popover, Snackbar} from "@mui/material";
 
 const theme = createTheme();
 
-const SignInPage = () => (
+const PasswordForgetPage = () => (
     <div>
-        <SignInForm/>
+        <PasswordForgetForm/>
     </div>
 );
 const INITIAL_STATE = {
@@ -30,7 +30,7 @@ const INITIAL_STATE = {
     anchorEl: null,
 };
 
-class SignInFormBase extends Component {
+class PasswordForgetFormBase extends Component {
     constructor(props) {
         super(props);
         this.state = {...INITIAL_STATE};
@@ -41,10 +41,9 @@ class SignInFormBase extends Component {
         const past_event = event.currentTarget;
         const {email} = this.state;
         this.props.firebase
-            .doPasswordReset(email,).then(() => {
+            .doPasswordReset(email).then(() => {
             this.setState({...INITIAL_STATE});
-            this.props.history.push(ROUTES.HOME);
-        })
+            })
             .catch(error => {
                 this.setState({["anchorEl"]: past_event[2]});
             });
@@ -56,14 +55,13 @@ class SignInFormBase extends Component {
     render() {
         const {email, error, anchorEl} = this.state;
         const open = Boolean(anchorEl);
-        const id = open ? 'simple-popover' : undefined;
         const handleClose = () => {
             this.setState({anchorEl: null});
         };
         return (
             <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xs">
-                    <CssBaseline />
+                    <CssBaseline/>
                     <Box
                         sx={{
                             marginTop: 8,
@@ -72,13 +70,13 @@ class SignInFormBase extends Component {
                             alignItems: 'center',
                         }}
                     >
-                        <Avatar sx={{ m: 1 }}>
-                            <LockResetOutlinedIcon />
+                        <Avatar sx={{m: 1}}>
+                            <LockResetOutlinedIcon/>
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Reset Password
                         </Typography>
-                        <Box component="form" onSubmit={this.onSubmit} noValidate sx={{ mt: 1 }}>
+                        <Box component="form" onSubmit={this.onSubmit} noValidate sx={{mt: 1}}>
                             <TextField
                                 margin="normal"
                                 required
@@ -94,13 +92,16 @@ class SignInFormBase extends Component {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
+                                sx={{mt: 3, mb: 2}}
                             >
                                 reset
                             </Button>
-                            {/*todo: add top location*/}
-                            <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
-                                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                            <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}
+                                      anchorOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'center',
+                                      }}>
+                                <Alert onClose={handleClose} severity="error" variant="filled" sx={{width: '100%'}}>
                                     Email is not registered
                                 </Alert>
                             </Snackbar>
@@ -135,6 +136,6 @@ class SignInFormBase extends Component {
     }
 }
 
-const SignInForm = withRouter(withFirebase(SignInFormBase));
-export default SignInPage;
-export {SignInForm};
+const PasswordForgetForm = withFirebase(PasswordForgetFormBase);
+export default PasswordForgetPage;
+export {PasswordForgetForm};

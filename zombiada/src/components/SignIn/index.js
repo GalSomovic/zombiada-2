@@ -15,7 +15,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {Popover} from "@mui/material";
+import {Alert, Popover, Snackbar} from "@mui/material";
 
 const theme = createTheme();
 
@@ -39,7 +39,6 @@ class SignInFormBase extends Component {
 
     onSubmit = event => {
         event.preventDefault();
-        const past_event = event.currentTarget;
         const {email, password} = this.state;
         this.props.firebase
             .doSignInWithEmailAndPassword(email, password).then(() => {
@@ -47,7 +46,7 @@ class SignInFormBase extends Component {
             this.props.history.push(ROUTES.HOME);
         })
             .catch(error => {
-                this.setState({["anchorEl"]: past_event[5]});
+                this.setState({["anchorEl"]: true});
             });
     };
     onChange = event => {
@@ -114,22 +113,31 @@ class SignInFormBase extends Component {
                             >
                                 Sign In
                             </Button>
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'center',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'center',
-                                }}
-                            >
-                                <Typography sx={{ p: 2 }}>User doesn't exists</Typography>
-                            </Popover>
+                            <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}
+                                      anchorOrigin={{
+                                          vertical: 'top',
+                                          horizontal: 'center',
+                                      }}>
+                                <Alert onClose={handleClose} severity="error" variant="filled" sx={{width: '100%'}}>
+                                    Email or Password are incorrect
+                                </Alert>
+                            </Snackbar>
+                            {/*<Popover*/}
+                            {/*    id={id}*/}
+                            {/*    open={open}*/}
+                            {/*    anchorEl={anchorEl}*/}
+                            {/*    onClose={handleClose}*/}
+                            {/*    anchorOrigin={{*/}
+                            {/*        vertical: 'bottom',*/}
+                            {/*        horizontal: 'center',*/}
+                            {/*    }}*/}
+                            {/*    transformOrigin={{*/}
+                            {/*        vertical: 'top',*/}
+                            {/*        horizontal: 'center',*/}
+                            {/*    }}*/}
+                            {/*>*/}
+                            {/*    <Typography sx={{ p: 2 }}>User doesn't exists</Typography>*/}
+                            {/*</Popover>*/}
                             <Grid container>
                                 <Grid item xs>
                                     <Link href={ROUTES.PASSWORD_FORGET} variant="body2">

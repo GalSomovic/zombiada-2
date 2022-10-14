@@ -25,6 +25,8 @@ class Firebase {
 
     // *** Auth API ***
 
+    // todo: change error message based on error received - not here, in login/singup/forgotpass pages
+
     // todo: error handling when a creating a user that already exists
     doCreateUserWithEmailAndPassword = (email, password) =>
         createUserWithEmailAndPassword(this.auth,email,password)
@@ -33,6 +35,7 @@ class Firebase {
     doSignInWithEmailAndPassword = (email, password) =>
         signInWithEmailAndPassword(this.auth, email, password);
 
+    // todo: add nav("/login")
     doSignOut = () => signOut(this.auth);
 
     // todo: error handling - email doesn't exists
